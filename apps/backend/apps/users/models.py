@@ -19,30 +19,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = "email"
 
-
-# Social account model to store social login information.
-### Deintegrate when using django all-auth
-class SocialAccount(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="social_accounts",
-    )
-
-    provider = models.CharField(max_length=50)
-    provider_user_id = models.CharField(max_length=255)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["provider", "provider_user_id"],
-                name="unique_social_identity",
-            )
-        ]
-
-
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User,

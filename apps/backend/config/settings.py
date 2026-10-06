@@ -30,7 +30,11 @@ SECRET_KEY = 'django-insecure-o$gva9%647w3^sly3)oxv^byx1nejh&%t+=knyz%axs3im4y&q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 
 # Application definition
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    "corsheaders",
 
     "django.contrib.sites",
 
@@ -62,6 +67,7 @@ SITE_ID = 1
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
+        "APPS": [{"client_id": os.environ["GOOGLE_CLIENT_ID"], "secret": os.environ["GOOGLE_CLIENT_SECRET"]}],
         "SCOPE": [
             "profile",
             "email",
@@ -73,28 +79,46 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_SIGNUP_FIELDS = ["email*"]
 
-# All Auth JWT Strategy
+ACCOUNT_ADAPTER = "apps.users.adapters.AccountAdapter"
+SOCIALACCOUNT_ADAPTER = "apps.users.adapters.SocialAccountAdapter"
+
+# Link a Google login to an existing user with the same *verified* email
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_STORE_TOKENS = False
 
 HEADLESS_ONLY = True
 
-HEADLESS_TOKEN_STRATEGY = (
-    "allauth.headless.tokens.strategies.jwt.JWTTokenStrategy"
-)
+HEADLESS_FRONTEND_URLS = {
+    "socialaccount_login_error": "http://localhost:3000/login?error=social",
+}
 
-HEADLESS_JWT_KEY = os.environ["HEADLESS_JWT_KEY"]
+
+# Cookie and Security Settings
+SESSION_COOKIE_DOMAIN = "localhost" # Change to .asorolang.com in production
+CSRF_COOKIE_DOMAIN = "localhost" 
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SECURE = CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False  # Next.js must read it to send X-CSRFToken
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://app.asorolang.com"] # 
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [ "http://localhost:3000", "https://app.asorolang.com"] 
 
 # Middleware settings
 
 MIDDLEWARE = [
-    "allauth.account.middleware.AccountMiddleware",
-
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
+
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -123,7 +147,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "allauth.headless.contrib.rest_framework.authentication.JWTTokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
