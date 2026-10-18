@@ -1,0 +1,1 @@
+LESSON_ID_LENGTH = 8
