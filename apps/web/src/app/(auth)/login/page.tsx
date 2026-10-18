@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LoginCard } from "../components/login-card";
+import { LoginCard } from "./components/LoginCard";
  
 export const metadata: Metadata = {
   title: "Sign in",
@@ -15,10 +15,8 @@ const errorMessages: Record<string, string> = {
  
 const fallbackError = "We couldn't sign you in. Please try again.";
  
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
+export default async function LoginPage(
+  {searchParams}: {searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
   const message = error ? (errorMessages[error] ?? fallbackError) : undefined;
