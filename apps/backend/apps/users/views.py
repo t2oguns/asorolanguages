@@ -6,6 +6,9 @@ from rest_framework.response import Response
 class MeView(APIView):
     def get(self, request):
         u = request.user
+
+        if(u.is_superuser):
+            return Response({"id": u.id, "email": u.email, "is_superuser": True})
         try:
             p = u.profile
             if p:
