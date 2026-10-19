@@ -1,3 +1,7 @@
+import type { ApiResponse } from "./api-types";
+import type { paths } from "@/lib/api-schema";
+
+
 export const API = process.env.NEXT_PUBLIC_API_URL!; // https://api.example.com
 
 export function getCsrf(): string {
@@ -9,10 +13,19 @@ export class ApiError extends Error {
     super(`API error ${status}`);
   }
 }
+type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
+
 
 // Client-side calls (mutations): cookie + CSRF header
-export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function api<
+  P extends keyof paths,
+  M extends HttpMethod = "get",
+>(
+  path: P,
+  init: RequestInit & { method?: M } = {},
+): Promise<ApiResponse<P, M>> {
   const method = (init.method ?? "GET").toUpperCase();
+
   const res = await fetch(`${API}${path}`, {
     ...init,
     credentials: "include",
@@ -27,7 +40,13 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     window.location.href = "/login";
     throw new ApiError(res.status, null);
   }
-  const body = res.status === 204 ? null : await res.json().catch(() => null);
-  if (!res.ok) throw new ApiError(res.status, body);
-  return body as T;
+
+  const body =
+    res.status === 204 ? null : await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw new ApiError(res.status, body);
+  }
+
+  return body as ApiResponse<P, M>;
 }

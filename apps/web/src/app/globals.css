@@ -19,6 +19,105 @@
   }
 }
 
+@theme {
+  --color-ewe-50: #ceebe6;
+  --color-ewe-100: #97ded2;
+  --color-ewe-300: #89ccc4;
+  --color-ewe-500: #2a9d8f;
+  --color-ewe-700: #2a9d8f;
+  --color-alangba: #89ccc4;
+  --color-osan-500: #ff8254;
+  --color-osan-700: #ff6b35;
+  --color-pupa-700: #ab2525;
+}
+
+@layer {
+  .glass-3d {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .fade-bottom {
+    mask: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask: linear-gradient(to bottom, black 60%, transparent 10%);
+  }
+
+  .annotation {
+    display: inline-flex;
+    align-items: center;
+    flex-flow: column nowrap;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      overflow: visible;
+      cursor: pointer;
+
+      .annotation-text {
+        opacity: 1;
+        box-shadow: 3px 2px 5px rgba(0, 0, 0, 0.25);
+      }
+    }
+  }
+
+  .annotation-text {
+    background-color: #2a9d8f;
+    color: #ffffff;
+    padding: 5px 10px;
+    position: absolute;
+    top: -2.25em;
+    white-space: nowrap;
+    display: inline-block;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    font-size: 0.7em;
+    border-radius: 5px;
+  }
+
+  .annotation-symbol:not(:first-child) {
+    display: block;
+  }
+
+  .annotation-symbol:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    display: block;
+    height: 2px;
+    border-radius: 5px;
+    background-color: rgb(175, 175, 175);
+    bottom: -2px;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scroll-container-left {
+    direction: rtl; /* scrollbar on left */
+  }
+
+  .scroll-container-left::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scroll-container-left::-webkit-scrollbar-thumb {
+    background-color: #7a7a7a; /* gray-500 */
+    border-radius: 6px;
+  }
+  .scroll-container-left::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-content-reorient {
+    direction: ltr; /* text remains left-to-right */
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
