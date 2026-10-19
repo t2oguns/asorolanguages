@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from .serializers import UserProfileSerializer
 # Create your views here.
 
 class MeView(APIView):
@@ -12,7 +13,6 @@ class MeView(APIView):
         try:
             p = u.profile
             if p:
-                return Response({"id": u.id, "email": u.email,
-                                "display_name": p.display_name, "avatar_url": p.avatar_url})
+                return Response(UserProfileSerializer(p).data)
         except Exception as e:
             return Response({"id": u.id, "email": u.email})

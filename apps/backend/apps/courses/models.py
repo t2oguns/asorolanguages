@@ -36,6 +36,13 @@ class Module(models.Model):
     class Meta:
         ordering = ["order"]
 
+        constraints = [
+            models.UniqueConstraint(
+                fields=["unit", "order"],
+                name="unique_module_order"
+            )
+        ]
+
 class PUBLISH_STATUS(models.TextChoices):
     DRAFT ="draft", "Draft"
     GENERATED ="generated", "Generated"

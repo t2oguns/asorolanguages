@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    "drf_spectacular",
     "corsheaders",
 
     "django.contrib.sites",
@@ -157,6 +158,11 @@ REST_FRAMEWORK = {
 
 }
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Asoro API",
+    "DESCRIPTION": "API for Asoro",
+    "VERSION": "1.0.0",
+}
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
