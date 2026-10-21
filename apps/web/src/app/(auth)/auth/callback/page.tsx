@@ -1,4 +1,4 @@
-import { getUser } from "@/lib/session";
+import { getUser } from "@/lib/actions/session";
 import { redirect } from "next/navigation";
 
 export default async function Callback() {

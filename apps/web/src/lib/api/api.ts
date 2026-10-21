@@ -1,5 +1,5 @@
 import type { ApiResponse } from "./api-types";
-import type { paths } from "@/lib/api-schema";
+import type { paths } from "@/lib/api/api-schema";
 
 
 export const API = process.env.NEXT_PUBLIC_API_URL!; // https://api.example.com

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
-import { server } from "../../../../../test/server";
+import { server } from "../../../../test/server";
 import { LoginCard } from "./LoginCard";
 
 it("posts a form to Django's redirect endpoint with the right fields", async () => {

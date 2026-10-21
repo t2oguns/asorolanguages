@@ -1,7 +1,7 @@
 'use client'
 
-import LogoutButton from '@/app/(auth)/logout/components/LogoutButton'
-import { api } from '@/lib/api'
+import LogoutButton from '@/components/features/logout/LogoutButton'
+import { api } from '@/lib/api/api'
 import React, { useEffect, useState } from 'react'
 const Profile = () => {
     const [user, setUser] = useState({

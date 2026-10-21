@@ -1,6 +1,6 @@
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError } from "@/lib/api/api";
 import { useRouter } from "next/navigation";
-import { API, getCsrf } from "@/lib/api";
+import { API, getCsrf } from "@/lib/api/api";
 
 
 export class LogoutError extends Error {}

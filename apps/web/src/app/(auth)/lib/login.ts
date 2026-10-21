@@ -1,4 +1,4 @@
-import { API, api, getCsrf } from "@/lib/api";
+import { API, api, getCsrf } from "@/lib/api/api";
 
 
 //This function uses a post form 

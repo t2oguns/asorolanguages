@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation';
-import type { components } from '@/lib/api-schema'
+import type { components } from '@/lib/api/api-schema'
 
 type LessonType = components["schemas"]["LessonDetail"]
 

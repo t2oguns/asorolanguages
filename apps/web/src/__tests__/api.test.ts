@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { server } from "../../test/server";
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError } from "@/lib/api/api";
 
 
 // This sets the csrf token that django would usually send

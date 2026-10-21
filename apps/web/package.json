@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "api:types": "make -C ../backend types"
   },
   "dependencies": {
     "next": "16.3.8",

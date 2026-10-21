@@ -4,7 +4,7 @@ vi.mock("next/navigation", () => ({ redirect: vi.fn(() => { throw new Error("NEX
 import { http, HttpResponse } from "msw";
 import { redirect } from "next/navigation";
 import { server } from "../../test/server";
-import { serverFetch } from "@/lib/server-api";
+import { serverFetch } from "@/lib/api/server-api";
 
 it("forwards the browser cookie to Django", async () => {
   let cookie: string | null = null;

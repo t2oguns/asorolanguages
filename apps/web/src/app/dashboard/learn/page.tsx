@@ -1,8 +1,8 @@
 import React from 'react'
-import Profile from '../components/Profile'
-import LogoutButton from '@/app/(auth)/logout/components/LogoutButton'
-import Unit from './components/Unit'
-import { serverFetch } from '@/lib/server-api';
+import Profile from '../../../components/features/dashboard/Profile'
+import LogoutButton from '@/components/features/logout/LogoutButton'
+import Unit from '../../../components/features/learn/Unit'
+import { serverFetch } from '@/lib/api/server-api';
 
 const Page = async () => {
   let units;

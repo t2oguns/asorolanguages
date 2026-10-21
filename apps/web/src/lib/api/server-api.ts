@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import type { paths } from "@/lib/api-schema";
+import type { paths } from "@/lib/api/api-schema";
 import { type ApiResponse } from "./api-types";
 
 export async function serverFetch<

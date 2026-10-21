@@ -1,4 +1,4 @@
-import { server } from "../../../../../test/server";
+import { server } from "../../../../test/server";
 import { delay, http, HttpResponse } from "msw";
 import { render, screen, waitFor } from "@testing-library/react";
 import LogoutButton from "./LogoutButton";

@@ -1,4 +1,4 @@
-import type { paths } from "@/lib/api-schema";
+import type { paths } from "@/lib/api/api-schema";
 
 type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 

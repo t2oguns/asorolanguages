@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useMemo, useRef, useEffect } from 'react';
-import type { components } from '@/lib/api-schema';
+import type { components } from '@/lib/api/api-schema';
 
 import Module from './Module';
 import ModulePath from './ModulePath';
 
-import { useUnitInteraction } from '../hooks/useUnitInteraction';
-import {generateWindingLayout, calculateSpreadPosition,type Point} from '../utils/module-layout';
+import { useUnitInteraction } from './useUnitInteraction';
+import {generateWindingLayout, calculateSpreadPosition,type Point} from './module-layout';
 
 type UnitType = components['schemas']['Unit'];
 

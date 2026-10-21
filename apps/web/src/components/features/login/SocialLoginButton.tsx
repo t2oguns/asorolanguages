@@ -1,5 +1,5 @@
 import React from 'react'
-import { login } from "../../lib/login";
+import { login } from "../../../app/(auth)/lib/login";
 
 function Spinner({ className }: { className?: string }) {
   return (
