@@ -1,18 +1,14 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import UserProfileSerializer
+from rest_framework.permissions import IsAuthenticated
+from .serializers import MeSerializer
+
 # Create your views here.
 
-class MeView(APIView):
-    def get(self, request):
-        u = request.user
+class MeView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = MeSerializer
 
-        if(u.is_superuser):
-            return Response({"id": u.id, "email": u.email, "is_superuser": True})
-        try:
-            p = u.profile
-            if p:
-                return Response(UserProfileSerializer(p).data)
-        except Exception as e:
-            return Response({"id": u.id, "email": u.email})
+    def get(self, request):
+        serializer = MeSerializer(request.user)
+        return Response(serializer.data)

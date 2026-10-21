@@ -1,16 +1,29 @@
 from rest_framework import serializers
-from .models import User, UserProfile, UserLearningStats
+from django.contrib.auth import get_user_model
+from .models import UserProfile
+
+User = get_user_model()
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(source="user.id", read_only=True)
     
-    email = serializers.CharField(
-        source="user.email",
-        read_only=True,
-    )
-
     class Meta:
         model = UserProfile
-        fields = ["id","email", "display_name", "avatar_url"] 
+        fields = ["user", "display_name", "avatar_url"] 
 
+
+class MeSerializer(serializers.ModelSerializer):
+    is_superuser = serializers.BooleanField(read_only=True)
+    profile = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["id", "email", "is_superuser", "profile"]
+
+    def get_profile(self, obj):
+        try:
+            profile = obj.profile
+        except UserProfile.DoesNotExist:
+            return None
+
+        return UserProfileSerializer(profile).data

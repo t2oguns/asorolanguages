@@ -98,6 +98,10 @@ HEADLESS_FRONTEND_URLS = {
     "socialaccount_login_error": "http://localhost:3000/login?error=social",
 }
 
+HEADLESS_CLIENTS = ("app", "browser")
+
+
+
 
 # Cookie and Security Settings
 SESSION_COOKIE_DOMAIN = "localhost" # Change to .asorolang.com in production
@@ -164,6 +168,9 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
 }
 
+HEADLESS_SERVE_SPECIFICATION = True
+
+
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
@@ -174,7 +181,7 @@ DATABASES = {
         "USER": os.environ["POSTGRES_USER"],
         "PASSWORD": os.environ["POSTGRES_PASSWORD"],
         "HOST": "localhost",
-        "PORT": "5432",
+        "PORT": "5433",
     }
 }
 
