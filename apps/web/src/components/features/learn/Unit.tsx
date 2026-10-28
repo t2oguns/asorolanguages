@@ -136,7 +136,7 @@ const Unit = ({ unit }: Props) => {
     const canvasRows = Math.max(unit.modules.length, 1);
 
     return (
-        <section className="flex min-h-screen w-full snap-start flex-col pt-6">
+        <section className="flex min-h-screen w-full snap-start flex-col pt-6" data-testid="unit">
             {/* Unit heading */}
             <header className="w-fit text-right">
                 <p className="text-xl font-semibold text-gray-500">

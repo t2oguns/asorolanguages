@@ -1,4 +1,4 @@
-import type { ApiResponse } from "./api-types";
+import type { ApiResponse, PathParams } from "./api-types";
 import type { paths } from "@/lib/api/api-schema";
 
 
@@ -10,24 +10,47 @@ export function getCsrf(): string {
 
 export class ApiError extends Error {
   constructor(public status: number, public body: unknown) {
-    super(`API error ${status}`);
+    super(`API error ${status}:`);
   }
 }
+
+export function buildPath<P extends keyof paths>(
+  path: P,
+  params: PathParams<P & string>,
+): string {
+  return Object.entries(params).reduce(
+    (url, [key, value]) =>
+      url.replace(`{${key}}`, encodeURIComponent(String(value))),
+    path as string,
+  );
+}
+
 type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 
 
 // Client-side calls (mutations): cookie + CSRF header
+
 export async function api<
   P extends keyof paths,
   M extends HttpMethod = "get",
 >(
   path: P,
-  init: RequestInit & { method?: M } = {},
+  init: RequestInit & {
+    method?: M;
+    params?: {
+      path?: PathParams<P & string>;
+    };
+  } = {},
 ): Promise<ApiResponse<P, M>> {
   const method = (init.method ?? "GET").toUpperCase();
+  const { params, ...requestInit } = init;
 
-  const res = await fetch(`${API}${path}`, {
-    ...init,
+  const url = params?.path
+    ? buildPath(path, params.path)
+    : path as string;
+
+  const res = await fetch(`${API}${url}`, {
+    ...requestInit,
     credentials: "include",
     headers: {
       "Content-Type": "application/json",

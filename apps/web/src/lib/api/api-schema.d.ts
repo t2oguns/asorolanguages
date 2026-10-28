@@ -20,6 +20,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/courses/lesson/{code}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_courses_lesson_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/courses/lesson/{code}/submit/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["v1_courses_lesson_submit_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["v1_courses_lesson_submit_partial_update"];
+        trace?: never;
+    };
     "/api/v1/courses/units/": {
         parameters: {
             query?: never;
@@ -2795,6 +2827,15 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Lesson: {
+            readonly id: number;
+            title: string;
+            description?: string;
+            order: number;
+            difficulty?: number;
+            module: number;
+            readonly code: string;
+        };
         LessonDetail: {
             readonly id: number;
             title: string;
@@ -2818,6 +2859,15 @@ export interface components {
             /** @default 0 */
             order: number;
             readonly lessons: components["schemas"]["LessonDetail"][];
+        };
+        PatchedLesson: {
+            readonly id?: number;
+            title?: string;
+            description?: string;
+            order?: number;
+            difficulty?: number;
+            module?: number;
+            readonly code?: string;
         };
         Unit: {
             readonly id: number;
@@ -4042,6 +4092,81 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Me"];
+                };
+            };
+        };
+    };
+    v1_courses_lesson_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Lesson"];
+                };
+            };
+        };
+    };
+    v1_courses_lesson_submit_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Lesson"];
+                "application/x-www-form-urlencoded": components["schemas"]["Lesson"];
+                "multipart/form-data": components["schemas"]["Lesson"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Lesson"];
+                };
+            };
+        };
+    };
+    v1_courses_lesson_submit_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedLesson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedLesson"];
+                "multipart/form-data": components["schemas"]["PatchedLesson"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Lesson"];
                 };
             };
         };

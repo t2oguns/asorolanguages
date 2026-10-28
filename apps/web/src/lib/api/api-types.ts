@@ -23,3 +23,8 @@ export type ApiResponse<
   P extends keyof paths,
   M extends HttpMethod,
 > = JsonResponse<Operation<P, M>>;
+
+export type PathParams<P extends string> =
+  P extends `${string}{${infer Param}}${infer Rest}`
+    ? { [K in Param | keyof PathParams<Rest>]: string | number }
+    : {};

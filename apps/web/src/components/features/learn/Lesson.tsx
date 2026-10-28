@@ -8,10 +8,11 @@ type LessonType = components["schemas"]["LessonDetail"]
 
 
 const Lesson = ({lesson}: {lesson: LessonType}) => {
-    const router = useRouter();
-  /*const goToLesson = () => {
-    router.push(`lesson/${lesson.code}/`);
-  };*/
+  const router = useRouter();
+  
+  const goToLesson = () => {
+    router.push(`/lesson/${lesson.code}/`);
+  };
 
   return (
     <div className="lesson-info rounded-2xl w-7/16 h-48 px-0.5 text-center flex flex-col items-center">
@@ -20,7 +21,7 @@ const Lesson = ({lesson}: {lesson: LessonType}) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            //goToLesson();
+            goToLesson();
           }}
           className="bg-white rounded-lg py-1 text-sm font-bold mt-auto w-3/4 hover:text-gray-400"
         >

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
 
 import Unit from './Unit';
@@ -80,11 +80,14 @@ describe('Unit', () => {
 
     render(<Unit unit={unit} />);
 
-    expect(screen.getByText("Unit 1")).toBeVisible();
+    const unit_component = screen.getByTestId("unit");
+
+    expect(unit_component).toBeVisible();
+
 
     // Check that all Modules are visible
     modules.forEach((module) => {
-      expect(screen.getByText(module.title)).toBeVisible();
+      expect(within(unit_component).getByText(module.title)).toBeVisible();
     });
   })
 });

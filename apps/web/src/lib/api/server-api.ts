@@ -2,17 +2,21 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import type { paths } from "@/lib/api/api-schema";
-import { type ApiResponse } from "./api-types";
+import { type PathParams, type ApiResponse } from "./api-types";
+import { buildPath } from "./api";
 
-export async function serverFetch<
-  P extends keyof paths,
->(
+export async function serverFetch <P extends keyof paths> (
   path: P,
+  params?: PathParams<P & string>,
 ): Promise<ApiResponse<P, "get">> {
   const cookie = (await cookies()).toString();
 
+  const url = params
+    ? buildPath(path, params)
+    : path as string;
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${path}`,
+    `${process.env.NEXT_PUBLIC_API_URL}${url}`,
     {
       headers: { cookie },
       cache: "no-store",
