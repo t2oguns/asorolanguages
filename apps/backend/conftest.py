@@ -3,6 +3,15 @@ import pytest
 from rest_framework.test import APIClient
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from apps.users.models import User
+from tests.factories import (
+    make_lesson,
+    make_module,
+    make_unit,
+    make_user,
+    make_user_progress,
+    make_lesson_progress
+)
+from apps.courses.models import PUBLISH_STATUS
 
 
 @pytest.fixture(autouse=True)
@@ -16,7 +25,7 @@ def _settings(settings):
 
 @pytest.fixture
 def user(db):
-    return User.objects.create_user(email="existing@example.com")
+    return make_user()
 
 
 @pytest.fixture
@@ -54,3 +63,29 @@ def google_login(db, client, mocker):
         # 3. Google redirects the browser back to Django's callback
         return client.get("/accounts/google/login/callback/", {"code": "fake", "state": state})
     return _login
+
+@pytest.fixture
+def unit(db):
+    return make_unit()
+
+@pytest.fixture
+def module(unit):
+    return make_module(unit=unit)
+
+@pytest.fixture
+def lesson(module):
+    return make_lesson(module=module, publication_status=PUBLISH_STATUS.PUBLISHED)
+
+@pytest.fixture
+def lesson_draft(module):
+    return make_lesson(module=module)
+
+
+@pytest.fixture
+def user_progress(user):
+    return make_user_progress(user=user)
+
+
+@pytest.fixture
+def lesson_progress(user):
+    return make_lesson_progress(lesson=lesson, user_progress=user_progress)

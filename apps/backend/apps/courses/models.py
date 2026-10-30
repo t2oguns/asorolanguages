@@ -72,7 +72,7 @@ class Lesson(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="lessons")
 
     # Ordering for lessons within a module.
-    order = models.PositiveIntegerField()
+    order = models.PositiveIntegerField(default=0)
 
     # Whether the lesson is in review, published, or archived. This is important for the content management system.
     publication_status = models.CharField(

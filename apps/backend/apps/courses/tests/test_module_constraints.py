@@ -2,19 +2,7 @@ import pytest
 from django.db import IntegrityError
 
 from apps.courses.models import Lesson, Module, Unit
-
-@pytest.fixture
-def unit(db):
-    return Unit.objects.create(title="Test Unit", order=1)
-
-
-@pytest.fixture
-def module(unit):
-    return Module.objects.create(
-        title="Introduction",
-        unit=unit,
-        order=1,
-    )
+from tests.factories import make_module
 
 def test_unit_cannot_be_null(db):
     try:
@@ -29,15 +17,17 @@ def test_unit_cannot_be_null(db):
     
 
 def test_modules_are_ordered_by_order(unit):
-    module1 = Module.objects.create(title="Lesson 1", order=2, unit=unit)
-    module2 = Module.objects.create(title="Lesson 2", order=1, unit=unit)
+    module1 = make_module(title="Lesson 1", order=2, unit=unit)
+    module2 = make_module(title="Lesson 2", order=1, unit=unit)
 
     modules = Module.objects.all()
     assert list(modules) == [module2, module1]
 
 
-def test_module_cannot_have_the_same_order(unit, module):
+def test_module_cannot_have_the_same_order(unit):
     # Attempt to create another module with the same order in the same unit
+    make_module(order=1, unit=unit)
+
     try:
         Module.objects.create(title="Module 2", order=1, unit=unit)
         assert False, "Expected an IntegrityError due to unique constraint violation."
@@ -47,12 +37,12 @@ def test_module_cannot_have_the_same_order(unit, module):
 def test_same_order_is_allowed_in_different_units(unit):
     another_unit = Unit.objects.create(title="Django Basics", order=2)
 
-    Module.objects.create(
+    module_1 = make_module(
         title="Module One",
         order=1,
         unit=unit,
     )
-    Module.objects.create(
+    module_2 = make_module(
         title="Module Two",
         order=1,
         unit=another_unit,

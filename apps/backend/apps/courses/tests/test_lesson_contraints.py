@@ -3,19 +3,8 @@ from django.db import IntegrityError
 
 from apps.courses.models import Lesson, Module, Unit
 from apps.courses.constants import LESSON_ID_LENGTH
+from tests.factories import make_lesson, make_module, make_unit
 
-@pytest.fixture
-def module(db):
-    return Module.objects.create(title="Test Module", order=1, unit=Unit.objects.create(title="Test Unit", order=1))
-
-
-@pytest.fixture
-def lesson(module):
-    return Lesson.objects.create(
-        title="Introduction",
-        module=module,
-        order=1,
-    )
 
 def test_module_cannot_be_null(db):
     try:
@@ -30,8 +19,8 @@ def test_module_cannot_be_null(db):
     
 
 def test_lessons_are_ordered_by_order(module):
-    lesson1 = Lesson.objects.create(title="Lesson 1", order=2, module=module)
-    lesson2 = Lesson.objects.create(title="Lesson 2", order=1, module=module)
+    lesson1 = make_lesson(title="Lesson 1", order=2, module=module)
+    lesson2 = make_lesson(title="Lesson 2",order=1, module=module)
 
     lessons = Lesson.objects.all()
     assert list(lessons) == [lesson2, lesson1]
@@ -39,11 +28,11 @@ def test_lessons_are_ordered_by_order(module):
 
 def test_lessons_cannot_have_the_same_order(module):
     # Create a lesson with order 1
-    Lesson.objects.create(title="Lesson 1", order=1, module=module)
+    make_lesson(order=1, module=module)
 
     # Attempt to create another lesson with the same order in the same module
     try:
-        Lesson.objects.create(title="Lesson 2", order=1, module=module)
+        make_lesson(order=1, module=module)
         assert False, "Expected an IntegrityError due to unique constraint violation."
     except Exception as e:
         assert "unique_lesson_order" in str(e), f"Unexpected error: {e}"
