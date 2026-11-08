@@ -36,7 +36,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/courses/lesson/{code}/submit/": {
+    "/api/v1/courses/lesson/{code}/sessions/": {
         parameters: {
             query?: never;
             header?: never;
@@ -44,12 +44,28 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["v1_courses_lesson_submit_update"];
-        post?: never;
+        put?: never;
+        post: operations["v1_courses_lesson_sessions_create"];
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["v1_courses_lesson_submit_partial_update"];
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/courses/lesson/{code}/sessions/{session_id}/submit/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_courses_lesson_sessions_submit_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/courses/units/": {
@@ -2827,23 +2843,139 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AcceptedAnswer: {
+            readonly id: string;
+            text: string;
+            is_primary?: boolean;
+        };
+        Blank: {
+            readonly id: string;
+            /** Format: int64 */
+            position: number;
+            /** Format: uuid */
+            source_block_id: string;
+            /** Format: uuid */
+            target_id: string | null;
+            /** Format: int64 */
+            start_offset: number;
+            /** Format: int64 */
+            end_offset: number;
+            explanation?: string;
+            readonly accepted_answers: components["schemas"]["BlankAnswer"][];
+        };
+        BlankAnswer: {
+            readonly id: string;
+            text: string;
+        };
+        /**
+         * @description * `text` - Text
+         *     * `word` - Word
+         *     * `expression` - Expression
+         *     * `media` - Media
+         * @enum {string}
+         */
+        BlockTypeEnum: "text" | "word" | "expression" | "media";
+        Exercise: {
+            /** Format: uuid */
+            readonly id: string;
+            exercise_type: components["schemas"]["ExerciseTypeEnum"];
+            instruction: string;
+            language: string;
+            level: components["schemas"]["LevelEnum"];
+            explanation?: string;
+            readonly explanation_media: components["schemas"]["Media"] | null;
+            case_sensitive?: boolean;
+            ignore_punctuation?: boolean;
+            ignore_diacritics?: boolean;
+            readonly targets: components["schemas"]["Target"][];
+            readonly prompt_blocks: components["schemas"]["PromptBlock"][];
+            readonly options: components["schemas"]["Option"][];
+            readonly accepted_answers: components["schemas"]["AcceptedAnswer"][];
+            readonly fill_blank_slots: components["schemas"]["Blank"][];
+            readonly matching_pairs: components["schemas"]["MatchingPair"][];
+        };
+        /**
+         * @description * `multiple_choice` - Multiple Choice
+         *     * `fill_blank` - Fill Blank
+         *     * `translation` - Translation
+         *     * `word_order` - Word Order
+         *     * `matching` - Matching
+         *     * `error_correction` - Error Correction
+         * @enum {string}
+         */
+        ExerciseTypeEnum: "multiple_choice" | "fill_blank" | "translation" | "word_order" | "matching" | "error_correction";
         Lesson: {
             readonly id: number;
             title: string;
             description?: string;
-            order: number;
+            /** Format: int64 */
+            order?: number;
+            /** Format: int64 */
             difficulty?: number;
-            module: number;
             readonly code: string;
+            readonly progress: components["schemas"]["LessonProgress"];
+        };
+        LessonBatchSubmit: {
+            responses: components["schemas"]["LessonResponse"][];
         };
         LessonDetail: {
             readonly id: number;
             title: string;
-            description?: string;
-            order: number;
-            difficulty?: number;
-            module: number;
             readonly code: string;
+            description?: string;
+            /** Format: int64 */
+            order?: number;
+            /** Format: int64 */
+            difficulty?: number;
+            readonly progress: components["schemas"]["LessonProgress"];
+        };
+        LessonMetadata: {
+            id: number;
+            code: string;
+            title: string;
+            description: string;
+        };
+        LessonProgress: {
+            status?: components["schemas"]["StatusEnum"];
+            /** Format: date-time */
+            completed_at?: string | null;
+            /** Format: int64 */
+            best_score?: number;
+        };
+        LessonResponse: {
+            /** Format: uuid */
+            exercise_id: string;
+            response: unknown;
+            recall_ratings?: unknown;
+        };
+        LessonSessionPayload: {
+            /** Format: uuid */
+            lesson_attempt_id: string;
+            submitted: boolean;
+            learner_id: string;
+            lesson: components["schemas"]["LessonMetadata"];
+            exercises: components["schemas"]["Exercise"][];
+        };
+        /**
+         * @description * `A1` - A1
+         *     * `A2` - A2
+         *     * `B1` - B1
+         *     * `B2` - B2
+         *     * `C1` - C1
+         *     * `C2` - C2
+         * @enum {string}
+         */
+        LevelEnum: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+        MatchingPair: {
+            readonly id: string;
+            /** Format: int64 */
+            position: number;
+            /** Format: uuid */
+            target_id: string | null;
+            left_text?: string;
+            readonly left_media: components["schemas"]["Media"] | null;
+            right_text?: string;
+            readonly right_media: components["schemas"]["Media"] | null;
         };
         Me: {
             readonly id: number;
@@ -2852,27 +2984,68 @@ export interface components {
             readonly is_superuser: boolean;
             readonly profile: string;
         };
+        Media: {
+            /** Format: uuid */
+            readonly id: string;
+            media_type: components["schemas"]["MediaTypeEnum"];
+            storage_key: string;
+            alt_text?: string;
+            readonly url: string;
+        };
+        /**
+         * @description * `audio` - Audio
+         *     * `image` - Image
+         *     * `video` - Video
+         * @enum {string}
+         */
+        MediaTypeEnum: "audio" | "image" | "video";
         Module: {
             readonly id: number;
-            unit: number;
             title: string;
-            /** @default 0 */
-            order: number;
+            /** Format: int64 */
+            order?: number;
             readonly lessons: components["schemas"]["LessonDetail"][];
         };
-        PatchedLesson: {
-            readonly id?: number;
-            title?: string;
-            description?: string;
-            order?: number;
-            difficulty?: number;
-            module?: number;
-            readonly code?: string;
+        Option: {
+            readonly id: string;
+            /** Format: int64 */
+            position: number;
+            text?: string;
+            readonly media: components["schemas"]["Media"] | null;
+            is_correct?: boolean;
+        };
+        PromptBlock: {
+            readonly id: string;
+            /** Format: int64 */
+            position: number;
+            block_type: components["schemas"]["BlockTypeEnum"];
+            readonly text: string;
+            readonly media: components["schemas"]["Media"] | null;
+        };
+        /**
+         * @description * `not_started` - Not Started
+         *     * `in_progress` - In Progress
+         *     * `completed` - Completed
+         * @enum {string}
+         */
+        StatusEnum: "not_started" | "in_progress" | "completed";
+        SubmissionReceipt: {
+            /** Format: uuid */
+            lesson_attempt_id: string;
+            submitted: boolean;
+        };
+        Target: {
+            readonly id: string;
+            sense_id: number;
+            lexeme_id: string;
+            label: string;
+            meaning: string;
         };
         Unit: {
             readonly id: number;
             title: string;
             description?: string | null;
+            /** Format: int64 */
             order?: number;
             readonly modules: components["schemas"]["Module"][];
         };
@@ -4117,20 +4290,42 @@ export interface operations {
             };
         };
     };
-    v1_courses_lesson_submit_update: {
+    v1_courses_lesson_sessions_create: {
         parameters: {
             query?: never;
             header?: never;
             path: {
                 code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LessonSessionPayload"];
+                };
+            };
+        };
+    };
+    v1_courses_lesson_sessions_submit_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+                session_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Lesson"];
-                "application/x-www-form-urlencoded": components["schemas"]["Lesson"];
-                "multipart/form-data": components["schemas"]["Lesson"];
+                "application/json": components["schemas"]["LessonBatchSubmit"];
+                "application/x-www-form-urlencoded": components["schemas"]["LessonBatchSubmit"];
+                "multipart/form-data": components["schemas"]["LessonBatchSubmit"];
             };
         };
         responses: {
@@ -4139,34 +4334,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Lesson"];
-                };
-            };
-        };
-    };
-    v1_courses_lesson_submit_partial_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                code: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedLesson"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedLesson"];
-                "multipart/form-data": components["schemas"]["PatchedLesson"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Lesson"];
+                    "application/json": components["schemas"]["SubmissionReceipt"];
                 };
             };
         };

@@ -1,7 +1,7 @@
 import AudioButton from '../ui/AudioButton';
-import type { ExerciseProps } from '../types';
+import type { ExerciseCommonProps, IntroCard } from '../types';
 
-export default function Intro({ ex, locale }: ExerciseProps<'intro'>) {
+export default function Intro({ ex, locale }: ExerciseCommonProps & { ex: IntroCard }) {
   return (
     <div className="mt-[8vh] flex flex-col items-center gap-3 rounded-3xl border-2 border-slate-200 bg-white px-6 py-9 text-center">
       <p className="text-[0.95rem] font-semibold text-slate-500">New word</p>

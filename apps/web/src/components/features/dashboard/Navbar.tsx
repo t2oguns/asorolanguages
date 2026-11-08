@@ -9,10 +9,9 @@ import { usePathname } from "next/navigation";
 function Navbar() {
 
   const navItems = [
+    { name: "Feed", path: "/dashboard/feed" },
     { name: "Learn", path: "/dashboard/learn" },
     { name: "Review", path: "/dashboard/review" },
-    { name: "Read", path: "/dashboard/read" },
-    { name: "Media", path: "/dashboard/media" },
   ];
   const pathname = usePathname();
   return (

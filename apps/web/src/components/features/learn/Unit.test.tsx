@@ -19,7 +19,7 @@ vi.mock('./ModulePath', () => ({
 }));
 
 describe('Unit', () => {
-  let toggleModuleSelection: ReturnType<typeof vi.fn>;
+  let toggleModuleSelection: ReturnType<typeof vi.fn<UseUnitInteractionReturn['toggleModuleSelection']>>;
   let mockUnitInteraction: UseUnitInteractionReturn;
   let unit: Parameters<typeof Unit>[0]['unit'];
 
@@ -42,7 +42,7 @@ describe('Unit', () => {
     unit = {
       id: 1,
       title: 'Introduction',
-      modules: [{ id: 101, title: 'Module One' }],
+      modules: [{ id: 101, title: 'Module One', lessons: [] }],
     } as Parameters<typeof Unit>[0]['unit'];
   });
 
@@ -67,9 +67,9 @@ describe('Unit', () => {
 
   it("renders Unit Text and all child modules", ()=>{
     const modules = [
-      { id: 1, title: "Module 1", unit: 1, order: 1},
-      { id: 2, title: "Module 2", unit: 1, order: 1 },
-      { id: 3, title: "Module 3", unit: 1, order: 1 },
+      { id: 1, title: "Module 1", unit: 1, order: 1, lessons: []},
+      { id: 2, title: "Module 2", unit: 1, order: 1, lessons: [] },
+      { id: 3, title: "Module 3", unit: 1, order: 1, lessons: [] },
     ]
 
     unit = {

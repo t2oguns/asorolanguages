@@ -1,8 +1,8 @@
 import { focusRing } from '../ui/ui';
 
-type Props = { title?: string; firstTry: number; total: number; onFinish: () => void };
+type Props = { title?: string; firstTry: number; total: number; onFinish: () => void; saving?: boolean; error?: string };
 
-export default function LessonComplete({ title, firstTry, total, onFinish }: Props) {
+export default function LessonComplete({ title, firstTry, total, onFinish, saving = false, error }: Props) {
   const pct = Math.round((total ? firstTry / total : 1) * 100);
   return (
     <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col items-center justify-center gap-5 px-5 py-12 text-center">
@@ -20,12 +20,14 @@ export default function LessonComplete({ title, firstTry, total, onFinish }: Pro
           <dd className="mt-1 text-2xl font-bold">{pct}%</dd>
         </div>
       </dl>
+      {error && <p role="alert" className="text-red-600">{error}</p>}
       <button
         type="button"
         onClick={onFinish}
+        disabled={saving}
         className={`min-w-36 rounded-2xl bg-blue-600 px-7 py-3.5 font-bold text-white ${focusRing}`}
       >
-        Finish
+        {saving ? 'Saving…' : error ? 'Retry saving' : 'Finish'}
       </button>
     </main>
   );

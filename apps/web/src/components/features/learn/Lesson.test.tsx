@@ -19,6 +19,7 @@ const mockLesson = {
     difficulty:1,
     order: 3,
     module: 1,
+    progress: { status: "not_started" as const, best_score: 0, completed_at: null },
 };
 
 describe('Lesson', () => {

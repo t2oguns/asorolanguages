@@ -1,86 +1,20 @@
-export type Exercise =
-  // A new word or phrase shown before it's tested. Not scored.
-  | {
-      id: string;
-      type: 'intro';
-      term: string;
-      translation: string;
-      note?: string;
-      speak?: string;
-    }
-  // Pick the right option from a list.
-  | {
-      id: string;
-      type: 'choice';
-      instruction?: string;
-      prompt: string;
-      options: string[];
-      answer: number; // index into options
-      speak?: string;
-    }
-  // Build a sentence by tapping words. `words` is the bank in display order,
-  // so include any distractors and shuffle them yourself.
-  | {
-      id: string;
-      type: 'wordbank';
-      instruction?: string;
-      prompt: string;
-      words: string[];
-      answer: string[];
-      alternatives?: string[][]; // other accepted orderings
-      speak?: string;
-    }
-  // Complete a sentence with the missing word.
-  | {
-      id: string;
-      type: 'fill';
-      instruction?: string;
-      before: string;
-      after: string;
-      options: string[];
-      answer: number;
-      translation?: string;
-    }
-  // Type the answer.
-  | {
-      id: string;
-      type: 'type';
-      instruction?: string;
-      prompt: string;
-      accepted: string[]; // first entry is shown as the correct answer
-      speak?: string;
-    }
-  // Match each term on the left with its pair on the right.
-  | {
-      id: string;
-      type: 'match';
-      instruction?: string;
-      pairs: { left: string; right: string }[];
-    };
- 
-export type LessonResult = {
-  total: number; // scored exercises (intro cards excluded)
-  firstTryCorrect: number;
-  missedIds: string[];
-  accuracy: number; // 0 to 1
-};
- 
-/* ---------- internal lesson state ---------- */
- 
-export type MatchState = { matched: number[]; mistakes: number };
-export type Answer = number | number[] | string | MatchState | null;
+import type { components } from '@/lib/api/api-schema';
+
+// API contracts come from `npm run api:types`, never a second handwritten DTO.
+export type GradedExercise = components['schemas']['Exercise'];
+export type LessonDelivery = components['schemas']['LessonSessionPayload'];
+export type BatchResponse = components['schemas']['LessonResponse'];
+export type Receipt = components['schemas']['SubmissionReceipt'];
+export type Media = components['schemas']['Media'];
+export type Policy = Pick<GradedExercise, 'case_sensitive' | 'ignore_punctuation' | 'ignore_diacritics'>;
+export type Evidence = components['schemas']['Target'] & { score: number };
+
+// Intro cards and the following types describe local presentation/state only.
+export type IntroCard = { id: string; type: 'intro'; term: string; translation: string; note?: string; speak?: string };
+export type Exercise = GradedExercise | IntroCard;
+export const isIntro = (exercise: Exercise): exercise is IntroCard => 'type' in exercise;
+export type Answer = string | string[] | Record<string, string>;
 export type Status = 'answering' | 'correct' | 'wrong';
- 
-export type Of<T extends Exercise['type']> = Extract<Exercise, { type: T }>;
- 
-export type ExerciseCommonProps = {
-  value: Answer;
-  onChange: (a: Answer) => void;
-  locked: boolean;
-  locale: string;
-  status: Status;
-};
- 
-export type ExerciseProps<T extends Exercise['type']> = ExerciseCommonProps & {
-  ex: Of<T>;
-};
+export type LessonResult = { total: number; firstTryCorrect: number; missedIds: string[]; accuracy: number };
+export type ExerciseCommonProps = { value: Answer; onChange: (answer: Answer) => void; locked: boolean; locale: string; status: Status };
+export type ExerciseProps = ExerciseCommonProps & { ex: GradedExercise };

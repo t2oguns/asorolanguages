@@ -1,9 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
-import { useRouter } from 'next/router';
 import { vi, describe, it, expect } from 'vitest';
 import LessonPlayer from './LessonPlayer';
 import { Exercise } from './types';
+import { exerciseFixture } from './lib/exercise.fixture';
 
 const { push } = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: ()=> ({ push }) }));
@@ -21,19 +21,13 @@ afterEach(() => {
 
 // Couple of mocked exercises
 const intro: Exercise = { id: 'i1', type: 'intro', term: 'el gato', translation: 'the cat' };
-const choice: Exercise = {
-  id: 'c1',
-  type: 'choice',
-  prompt: 'el gato',
-  options: ['the cat', 'the dog'],
-  answer: 0,
-};
+const choice: Exercise = exerciseFixture({ id: 'c1' });
 
 const footer = () => screen.getByRole('contentinfo');
 
 
 // A utility function to be able to render whatever lesson with whatever exercises we want
-function renderLesson(exercises: Exercise[], props: Partial<React.ComponentProps<typeof LessonPlayer>> = {}) {
+function renderLesson(exercises: Exercise[], props: Partial<Omit<React.ComponentProps<typeof LessonPlayer>, 'code' | 'exercises'>> = {}) {
     return render(<LessonPlayer exercises={exercises} {...props} />);
 }
 
