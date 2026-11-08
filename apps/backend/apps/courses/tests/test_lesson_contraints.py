@@ -7,15 +7,12 @@ from tests.factories import make_lesson, make_module, make_unit
 
 
 def test_module_cannot_be_null(db):
-    try:
-        lesson = Lesson.objects.create(
+    with pytest.raises(IntegrityError):
+        Lesson.objects.create(
             title="Standalone lesson",
             order=1,
             module=None,
         )
-        assert False, "Expected an IntegrityError due to null module."
-    except Exception as e:
-        assert "violates not-null constraint" in str(e), f"Unexpected error: {e}"
     
 
 def test_lessons_are_ordered_by_order(module):
@@ -31,11 +28,8 @@ def test_lessons_cannot_have_the_same_order(module):
     make_lesson(order=1, module=module)
 
     # Attempt to create another lesson with the same order in the same module
-    try:
+    with pytest.raises(IntegrityError):
         make_lesson(order=1, module=module)
-        assert False, "Expected an IntegrityError due to unique constraint violation."
-    except Exception as e:
-        assert "unique_lesson_order" in str(e), f"Unexpected error: {e}"
 
 def test_same_order_is_allowed_in_different_modules(module):
     another_module = Module.objects.create(title="Django Basics", unit=module.unit, order=2)

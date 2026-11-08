@@ -1,4 +1,3 @@
-import pytest
 from apps.users.models import User
 from apps.courses.models import Lesson, Module, Unit
 from apps.progress.models import UserProgress, UserLessonProgress
@@ -14,14 +13,7 @@ def make_user(**kwargs):
     )
 
 def make_user_progress(**kwargs):
-    defaults = {
-        "email": "test@example.com",
-    }
-    defaults.update(kwargs)
-
-    return UserProgress.objects.create_user(
-        **defaults,
-    )
+    return UserProgress.objects.create(**kwargs)
 
 def make_unit(**kwargs):
     defaults = {
@@ -58,12 +50,11 @@ def make_lesson(module, **kwargs):
         **defaults,
     )
 
-@pytest.fixture
 def make_lesson_progress(user_progress, lesson, **kwargs):
     defaults = {
         "status":UserLessonProgress.Status.IN_PROGRESS,
         "completed_at":None,
-        "best_score":None,
+        "best_score":0,
     }
 
     defaults.update(kwargs)

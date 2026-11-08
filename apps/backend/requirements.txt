@@ -8,6 +8,7 @@ django-allauth==65.19.7
 django-cors-headers==4.9.0
 django-shortuuidfield==0.1.3
 djangorestframework==3.18.1
+fsrs==6.3.2
 idna==3.20
 iniconfig==2.3.0
 oauthlib==4.0.0

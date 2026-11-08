@@ -87,5 +87,5 @@ def user_progress(user):
 
 
 @pytest.fixture
-def lesson_progress(user):
+def lesson_progress(user_progress, lesson):
     return make_lesson_progress(lesson=lesson, user_progress=user_progress)

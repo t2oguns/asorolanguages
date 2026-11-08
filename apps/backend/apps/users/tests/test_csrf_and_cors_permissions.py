@@ -5,7 +5,7 @@ def test_mutation_without_csrf_token_is_rejected(user):
     c = APIClient(enforce_csrf_checks=True)
     c.force_login(user)
     code = "12345678"
-    assert c.post(f"/api/v1/courses/lesson/{code}/submit/", {"name": "x"}, format="json").status_code == 403
+    assert c.post(f"/api/v1/courses/lesson/{code}/sessions/", {}, format="json").status_code == 403
 
 def test_cors_allows_frontend_origin(client, db):
     """ Test that CORS is configured to allow the frontend origin."""

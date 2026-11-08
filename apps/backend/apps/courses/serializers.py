@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from .models import Unit, Module, Lesson
 from apps.progress.models import UserLessonProgress
 from apps.progress.serializers import LessonProgressSerializer
@@ -11,6 +12,7 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ["id", "title", "description", "order", "difficulty", "code", "progress"] # "slides"
 
+    @extend_schema_field(LessonProgressSerializer)
     def get_progress(self, lesson):
             # Back reference from service augmentation
             records = lesson.current_user_progress
@@ -18,7 +20,7 @@ class LessonSerializer(serializers.ModelSerializer):
             if not records:
                 return {
                     "status": UserLessonProgress.Status.NOT_STARTED,
-                    "score": None,
+                    "best_score": 0,
                     "completed_at": None,
                 }
             return LessonProgressSerializer(records[0]).data
@@ -31,6 +33,7 @@ class LessonDetailSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ["id", "title", "code", "description", "order", "difficulty", "progress"]
 
+    @extend_schema_field(LessonProgressSerializer)
     def get_progress(self, lesson):
         # Back reference from service augmentation
         # getattr because becayse current_user_progress is an filtered list, not an actual model field
@@ -39,7 +42,7 @@ class LessonDetailSerializer(serializers.ModelSerializer):
         if not records:
             return {
                 "status": UserLessonProgress.Status.NOT_STARTED,
-                "score": None,
+                "best_score": 0,
                 "completed_at": None,
             }
         return LessonProgressSerializer(records[0]).data

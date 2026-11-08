@@ -61,7 +61,10 @@ INSTALLED_APPS = [
 
     'apps.users',
     'apps.courses',
-    'apps.progress'
+    'apps.progress',
+    'apps.vocabulary',
+    'apps.media',
+    'apps.exercises',
 ]
 
 
@@ -186,6 +189,8 @@ DATABASES = {
     }
 }
 
+# Cloudfront Domain
+CLOUDFRONT_DOMAIN = "https://media.example.com"
 
 # User model
 

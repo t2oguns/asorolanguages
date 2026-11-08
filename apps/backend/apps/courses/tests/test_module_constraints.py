@@ -5,15 +5,12 @@ from apps.courses.models import Lesson, Module, Unit
 from tests.factories import make_module
 
 def test_unit_cannot_be_null(db):
-    try:
-        module = Module.objects.create(
+    with pytest.raises(IntegrityError):
+        Module.objects.create(
             title="Standalone module",
             order=1,
             unit=None,
         )
-        assert False, "Expected an IntegrityError due to null unit."
-    except Exception as e:
-        assert "violates not-null constraint" in str(e), f"Unexpected error: {e}"
     
 
 def test_modules_are_ordered_by_order(unit):
@@ -28,11 +25,8 @@ def test_module_cannot_have_the_same_order(unit):
     # Attempt to create another module with the same order in the same unit
     make_module(order=1, unit=unit)
 
-    try:
+    with pytest.raises(IntegrityError):
         Module.objects.create(title="Module 2", order=1, unit=unit)
-        assert False, "Expected an IntegrityError due to unique constraint violation."
-    except Exception as e:
-        assert "unique_module_order" in str(e), f"Unexpected error: {e}"
 
 def test_same_order_is_allowed_in_different_units(unit):
     another_unit = Unit.objects.create(title="Django Basics", order=2)
